@@ -1,0 +1,47 @@
+from time import time
+
+from lib_array1d import array, empty, zeros
+
+SIZE = 1000000
+N_TRIALS = 8
+
+
+def main() -> None:
+    arr = array[f64](SIZE)
+    arr.fill(1.0)
+
+    duration = 10000000.0
+    for i_0 in range(N_TRIALS):
+        t_start = time()
+        for _0 in range(100):
+            res = arr + arr
+        duration_tmp = time() - t_start
+        duration = min(duration, duration_tmp)
+    print("spy add:#", duration, "s")
+
+    duration = 10000000.0
+    for i_1 in range(N_TRIALS):
+        t_start = time()
+        for _1 in range(100):
+            res = arr.inplace_add(arr)
+        duration_tmp = time() - t_start
+        duration = min(duration, duration_tmp)
+    print("spy add inplace:#", duration, "s")
+
+    duration = 10000000.0
+    for i_2 in range(N_TRIALS):
+        t_start = time()
+        for _2 in range(100):
+            res = empty[f64](SIZE)
+        duration_tmp = time() - t_start
+        duration = min(duration, duration_tmp)
+    print("spy empty:#", duration, "s")
+
+    duration = 10000000.0
+    for i_3 in range(N_TRIALS):
+        t_start = time()
+        for _3 in range(100):
+            res = zeros[f64](SIZE)
+        duration_tmp = time() - t_start
+        duration = min(duration, duration_tmp)
+    print("spy zeros:#", duration, "s")
