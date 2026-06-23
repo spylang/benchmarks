@@ -22,8 +22,8 @@ comparison.
 
 ## Setup and Dependencies
 
-A virtual environment containing SPy and NumPy can be setup with `uv sync`. The SPy repository (https://github.com/spylang/spy)
-must be installed next to the benchmarks repository.
+A virtual environment containing SPy and NumPy can be setup with `uv sync`. The SPy repository
+(https://github.com/spylang/spy) must be installed next to the benchmarks repository.
 
 Beyond SPy itself, some benchmarks compare against:
 
@@ -54,7 +54,7 @@ With the virtual environment activated (`. .venv/bin/activate`), one can run:
 
 ```bash
 # Run a single benchmark (all implementations)
-cd fibo && make all
+make -C fibo all
 
 # Run all benchmarks via pytest
 pytest
