@@ -1,0 +1,76 @@
+name: Benchmark Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  benchmark-tests:
+    name: benchmark-tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          path: repo
+
+      - name: Checkout spylang/spy repository
+        uses: actions/checkout@v7
+        with:
+          repository: spylang/spy
+          path: spy
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libgc-dev
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install venv
+        run: |
+          uv sync
+
+      - name: Build libspy
+        run: |
+          uv run make -C ../spy/spy/libspy
+
+      - name: Install PyPy
+        run: |
+          uv python install pypy
+
+      - name: Install Julia
+        uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+
+      - name: Install Codon
+        run: |
+          curl -L https://github.com/exaloop/codon/releases/latest/download/codon-linux-x86_64.tar.gz \
+            | tar -xz -C "$HOME"
+          mv $HOME/codon-deploy-linux-x86_64 $HOME/codon
+          echo "$HOME/codon/bin" >> $GITHUB_PATH
+
+      - name: Display tool versions
+        run: |
+          python --version
+          julia --version
+          echo -n "Codon " && codon --version
+          $(uv python find pypy --no-project) --version
+
+      - name: Run benchmark structure and SPy tests
+        run: |
+          uv run pytest test_spy_bench.py -v
+
+      - name: Run full benchmark CI suite
+        run: |
+          uv run pytest test_check_ci.py -v
