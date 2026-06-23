@@ -20,30 +20,14 @@ must be deterministic modulo timing lines, which are marked with a `#` prefix
 (or an inline `#` sentinel) so the test framework can strip them before
 comparison.
 
-## Running the benchmarks
+## Setup and Dependencies
 
-```bash
-# Run a single benchmark (all implementations)
-cd fibo && make all
-
-# Run all benchmarks via pytest
-pytest benchmarks/
-
-# Run only SPy comparisons (fast, no extra deps)
-pytest benchmarks/test_bench.py
-
-# Run the full CI suite (requires Julia, Codon, PyPy)
-pytest benchmarks/test_check_ci.py
-
-# Regenerate expected output after an intentional SPy change
-pytest benchmarks/test_bench.py --update-expected-output
-```
-
-## Dependencies
+A virtual environment containing SPy and NumPy can be setup with `uv sync`. The SPy repository (https://github.com/spylang/spy)
+must be installed next to the benchmarks repository.
 
 Beyond SPy itself, some benchmarks compare against:
 
-- **NumPy** — installed with `uv pip install -e .[dev,bench]` or `pixi shell`
+- **NumPy** — installed in the main venv.
 - **PyPy** — installed and managed via [uv](https://docs.astral.sh/uv/):
 
   ```bash
@@ -63,6 +47,27 @@ Beyond SPy itself, some benchmarks compare against:
   ```bash
   /bin/bash -c "$(curl -fsSL https://exaloop.io/install.sh)"
   ```
+
+## Running the benchmarks
+
+With the virtual environment activated (`. .venv/bin/activate`), one can run:
+
+```bash
+# Run a single benchmark (all implementations)
+cd fibo && make all
+
+# Run all benchmarks via pytest
+pytest
+
+# Run only SPy comparisons (fast, no extra deps)
+pytest test_spy_bench.py
+
+# Run the full CI suite (requires Julia, Codon, PyPy)
+pytest test_check_ci.py
+
+# Regenerate expected output after an intentional SPy change
+pytest test_spy_bench.py --update-expected-output
+```
 
 ## Relevant benchmark suites
 
